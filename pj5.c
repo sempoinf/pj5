@@ -4,6 +4,20 @@
 #include <stdlib.h>
 #include <limits.h>
 
+void write_dot(File* fname, int** mas, int size)
+{    fprintf (fname, "graph G{\n");
+
+    for(int i = 0; i < size; i++)
+        fprintf(fname,"%d;\n", i);
+    
+    for(int j = 0; j < size; j++)
+        for(int i = 0; i < size; i++)
+            for(int k = 0; k < mass[i][j]; k++)
+                 fprintf(fname,"%d;\n", i);}
+    
+    fprintf(fname,"}");
+    fclose(fname);
+
 
 int main(void) {
 	int N;
@@ -20,9 +34,9 @@ int main(void) {
 
 	s = (char*)malloc(sizeof(char) * CHAR_MAX);
 
-	int i = 0, m = 0;
+	int i = 0, m = 0, j = 0;
 
-	for (int j = 0; j < N; j++) {
+	for (; j < N; j++) {
 
 		while ((c = getchar()) != '\n') {
 
@@ -63,18 +77,61 @@ int main(void) {
 				matrix[i++][j] = 0;
 		}
 
-		i = 0;
 		free(s);
 		s = (char*)malloc(sizeof(char) * CHAR_MAX);
 	}
 	free(s);
+	
+	
+	File* fout;
+	fout= fopen("graph.gv","w");
+	write_dot(fout,mas,N);
+	
     
-    int count = 0, min = 100001,knot;
+    /*int count = 0,knot,min;
     for(i = 0; i<N;i++){
-         for(j = 0; j<N;j++){
-             if matrix[i][j] = 1
+         for(int j = 0; j<N;j++){
+             if (matrix[i][j] = 1)
              count =+1;}
         if (count<=min) { min = count;  knot = i;}  
          
+    }*/
+    
+    int Top[i];
+    
+    for(int y;y<=i;y++){
+        for(int yy;yy<=j;yy++){
+        Top[y]+=matrix[y][yy];
     }
+    }
+    
+    int MinTopRuts = 1000;
+    int MinTop[5];
+    int u++;
+    for(int y;y<=i;y++){
+        if(Top[y]<MinTopRuts){
+            MinTop[0]=y;
+            MinTopRuts=Top[y];
+        }
+    }
+    for(int y; y<=i;y++){
+        if(Top[y]==MinTop[0]){
+            MinTop[u]=y;
+            u++;
+        }
+    }
+    int routs[1000];
+    int o=0;
+    for(int y;y<u;y++){
+        for(int yy;yy<j;yy++)
+            if(matrix[MinTop[u]][yy]){
+                routs[o]=yy;
+                o++;
+            }
+        
+    }
+    
+    
+    
+  
 }
