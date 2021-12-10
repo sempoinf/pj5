@@ -24,7 +24,7 @@ int main() {//вводить с 0!!!!
 
 	int error = 0;//Работает корректно
 	int i, j, c;
-	c = scanf("%d-%d\n", &i, &j); // ввод 1-6
+	c = scanf("%d-%d\n", &i, &j); // вводим граф по примеру (1-2)
 
 	while (c != 0) {
 		if (c == 2) {
@@ -63,9 +63,9 @@ int main() {//вводить с 0!!!!
 	for (int i = 0; i < N; i++) {
 		if (*(a + i) < min) min = *(a + i);
 	}
-	printf("%d - mininmum\n", min);
+	printf("%d - min\n", min);
 
-	printf("List of vertices with minimum degrees:\n");
+	printf("List of vertices with min degrees:\n");
 	for (int i = 0; i < N; i++) {
 		if (*(a + i) == min) printf("%d ", i);
 	}
