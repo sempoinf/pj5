@@ -2,136 +2,87 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
-
-void write_dot(File* fname, int** mas, int size)
-{    fprintf (fname, "graph G{\n");
-
-    for(int i = 0; i < size; i++)
-        fprintf(fname,"%d;\n", i);
-    
-    for(int j = 0; j < size; j++)
-        for(int i = 0; i < size; i++)
-            for(int k = 0; k < mass[i][j]; k++)
-                 fprintf(fname,"%d;\n", i);}
-    
-    fprintf(fname,"}");
-    fclose(fname);
+#include <string.h>
+#include <stdbool.h>
 
 
-int main(void) {
+int main() {//вводить с 0!!!!
 	int N;
-	printf("Введите размер квадратной матрицы\n");
-	scanf("%d", &N);						//Пользователь вводит размер матрицы.
-	getchar();
-	int** matrix = NULL;
-	matrix = (int**)malloc(sizeof(*matrix) * N);
-	for (int i = 0; i < N; i++) {
-		matrix[i] = (int*)malloc(sizeof(**matrix) * N);
-	}
 
-	char* s, c;
+	printf("Number vershin: ");
+	scanf("%d", &N);
 
-	s = (char*)malloc(sizeof(char) * CHAR_MAX);
+	int* a = (int*)malloc(N * sizeof(int));
+	int* b = (int*)malloc(N * N * sizeof(int));
 
-	int i = 0, m = 0, j = 0;
+	for (int i = 0; i < N; i++)
+		*(a + i) = 0;
 
-	for (; j < N; j++) {
+	for (int i = 0; i < N * N; i++)
+		(*(b + i)) = 0;
 
-		while ((c = getchar()) != '\n') {
 
-			if (c != ' ')
-				s[m++] = c;
+	int error = 0;//Работает корректно
+	int i, j, c;
+	c = scanf("%d-%d\n", &i, &j); // ввод 1-6
 
-			else {
-				s[m] = '\0';
-
-				if (i >= N) {
-					printf("Error,matrix input uncorrect!\n ");
-					return -1;
-				}
-
-				matrix[i][j] = atoi(s);
-				i++;
-				free(s);
-				s = (char*)malloc(sizeof(char) * CHAR_MAX);
-				m = 0;
-
+	//случая с вводом "5" или "2" не должно быть! это противоречит здравому смыслу
+	while (c != 0) {
+		if (c == 2) {
+			if ((i >= N) || (j >= N)) {
+				printf("Vertex greater than N\n");
+				exit(1);
 			}
 
+			if (i > j) {
+				int buf = i;
+				i = j;
+				j = buf;
+			}
+
+			if (i == j) (*(b + i * N + j))++;//просто удваиваем дополнительно
+			(*(b + i * N + j))++;
 		}
-
-		s[m] = '\0';
-		m = 0;
-
-		if (i >= N) {
-			printf("Error,matrix input uncorrect!\n ");
-			return -1;
-		}
-
-		matrix[i][j] = atoi(s);
-
-		if (i < N) {             // Замена числа на 0, если оно не введено.
-			++i;
-			while (i < N)
-				matrix[i++][j] = 0;
-		}
-
-		free(s);
-		s = (char*)malloc(sizeof(char) * CHAR_MAX);
+		c = scanf("%d-%d\n", &i, &j);
 	}
-	free(s);
-	
-	
-	File* fout;
-	fout= fopen("graph.gv","w");
-	write_dot(fout,mas,N);
-	
-    
-    /*int count = 0,knot,min;
-    for(i = 0; i<N;i++){
-         for(int j = 0; j<N;j++){
-             if (matrix[i][j] = 1)
-             count =+1;}
-        if (count<=min) { min = count;  knot = i;}  
-         
-    }*/
-    
-    int Top[i];
-    
-    for(int y;y<=i;y++){
-        for(int yy;yy<=j;yy++){
-        Top[y]+=matrix[y][yy];
-    }
-    }
-    
-    int MinTopRuts = 1000;
-    int MinTop[5];
-    int u++;
-    for(int y;y<=i;y++){
-        if(Top[y]<MinTopRuts){
-            MinTop[0]=y;
-            MinTopRuts=Top[y];
-        }
-    }
-    for(int y; y<=i;y++){
-        if(Top[y]==MinTop[0]){
-            MinTop[u]=y;
-            u++;
-        }
-    }
-    int routs[1000];
-    int o=0;
-    for(int y;y<u;y++){
-        for(int yy;yy<j;yy++)
-            if(matrix[MinTop[u]][yy]){
-                routs[o]=yy;
-                o++;
-            }
-        
-    }
-    
-    
-    
-  
+
+
+	for (int i = 0; i < N; i++)
+		for (int j = i; j < N; j++) {
+			*(b + j * N + i) = *(b + i * N + j);//копирование через главную диагональ
+		}
+	/*
+	printf("\n");
+	for (int i = 0; i < N; i++) {//вывод матрицы на всякий
+		for (int j = 0; j < N; j++) {
+			printf("%d ", *(b + i * N + j));
+		}
+		printf("\n");
+	}
+	*/
+
+	printf("\n");//вычисление степеней
+	for (int i = 0; i < N; i++) {//складывать надо всю! строку, а не только один её кусок
+		for (int j = 0; j < N; j++) {
+			*(a + i) += *(b + i * N + j);
+		}
+	}
+	/*
+	for (int i = 0; i < N; i++) {//вывод сложения на всякий
+		printf("%d ", *(a + i));
+	}
+	printf("\n");
+	*/
+
+	int min = *(a);// *(a) значение самого первого(нулевого)
+	for (int i = 0; i < N; i++) {
+		if (*(a + i) < min) min = *(a + i);
+	}
+	printf("%d - mininmum\n", min);
+
+	printf("List of vertices with minimum degrees:\n");
+	for (int i = 0; i < N; i++) {
+		if (*(a + i) == min) printf("%d ", i);
+	}
+	printf("\n");
 }
