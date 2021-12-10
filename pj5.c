@@ -65,7 +65,7 @@ int main() {//вводить с 0!!!!
 	}
 	printf("%d - min\n", min);
 
-	printf("List of vertices with min degrees:\n");
+	printf("Вершины с минимальной степенью:\n");
 	for (int i = 0; i < N; i++) {
 		if (*(a + i) == min) printf("%d ", i);
 	}
