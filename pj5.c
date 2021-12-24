@@ -2,72 +2,81 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <malloc.h>
 #include <string.h>
-#include <stdbool.h>
 
 
-int main() {//вводить с 0!!!!
-	int N;
+int main(void) {
 
-	printf("Number vershin: ");
-	scanf("%d", &N);
+	int knots, edge;
+	
+	printf("Number of your knots: ");
+	if (scanf("%d", &knots) != 1)
+		exit(1);
+	printf("Number of your edges: ");
+	if (scanf("%d", &edge) != 1)
+		exit(1);
 
-	int* a = (int*)malloc(N * sizeof(int));
-	int* b = (int*)malloc(N * N * sizeof(int));
+	int** graph = NULL;
 
-	for (int i = 0; i < N; i++)
+	graph = (int**)malloc(edge * sizeof(int));
+	if (graph == NULL)
+		exit(1);
+	for (int i = 0; i < edge; i++)
+		graph[i] = (int*)malloc(knots * sizeof(int));
+
+	int num = '1';
+
+	printf("Complete array:\n  |");
+	for (int i = 0; i < edge; i++)
+		printf("%c ", num++);
+	printf("\n");
+
+	int num1 = '0';
+
+	for (int i = 0; i < knots; i++) {
+		printf(" %c|", num1++);
+		for (int j = 0; j < edge; j++) {
+			if (graph[j] == NULL)
+				exit(1);
+			if (scanf("%d", &graph[j][i]) != 1)
+				exit(1);
+		}
+	}
+	int* a = (int*)malloc(knots * sizeof(int));
+
+	for (int i = 0; i < knots; i++)
 		*(a + i) = 0;
 
-	for (int i = 0; i < N * N; i++)
-		(*(b + i)) = 0;
 
 
-	int error = 0;//Работает корректно
-	int i, j, c;
-	c = scanf("%d-%d\n", &i, &j); // вводим граф по примеру (1-2)
-
-	while (c != 0) {
-		if (c == 2) {
-			if ((i >= N) || (j >= N)) {
-				printf("Vertex greater than N\n");
-				exit(1);
-			}
-
-			if (i > j) {
-				int buf = i;
-				i = j;
-				j = buf;
-			}
-
-			if (i == j) (*(b + i * N + j))++;//просто удваиваем дополнительно
-			(*(b + i * N + j))++;
-		}
-		c = scanf("%d-%d\n", &i, &j);
-	}
-
-
-	for (int i = 0; i < N; i++)
-		for (int j = i; j < N; j++) {
-			*(b + j * N + i) = *(b + i * N + j);//копирование через главную диагональ
-		}
-	
 	printf("\n");//вычисление степеней
-	for (int i = 0; i < N; i++) {//складывать надо всю! строку, а не только один её кусок
-		for (int j = 0; j < N; j++) {
-			*(a + i) += *(b + i * N + j);
+	for (int i = 0; i < knots; i++) {//складывать надо всю! строку, а не только один её кусок
+		int count = 0;
+		for (int j = 0; j < edge; j++) {
+			count += graph[j][i];
 		}
+		a[i] = count;
 	}
-	
-
+	/*
+	for (int i = 0; i < knots; i++) { //массив a выводим,чтобы понять какая степень вершины
+		printf("%d ", *(a + i));
+	}
+	*/
+	printf("\n");
 	int min = *(a);// *(a) значение самого первого(нулевого)
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < knots; i++) {
 		if (*(a + i) < min) min = *(a + i);
 	}
-	printf("%d - min\n", min);
+	printf("%d - min\n", min);//вывод min степени вершины
 
-	printf("Вершины с минимальной степенью:\n");
-	for (int i = 0; i < N; i++) {
-		if (*(a + i) == min) printf("%d ", i);
+	printf("Edges of min levels:\n");
+	for (int i = 0; i < knots; i++) {
+		if (*(a + i) == min) {
+			for (int j = 0; j < edge; j++) {
+				if (graph[j][i] == 1) printf("%d\t", j);
+			}
+		}
 	}
 	printf("\n");
 }
